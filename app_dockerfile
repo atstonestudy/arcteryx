@@ -2,6 +2,7 @@ FROM arcteryx:1.0
 
 MAINTAINER hecter
 
+RUN pip3 install apscheduler
 RUN rm -rf /arcteryx_work
 ADD . /arcteryx_work
 WORKDIR /arcteryx_work
