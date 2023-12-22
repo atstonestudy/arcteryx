@@ -8,7 +8,8 @@
     },
     "appconf": {
         "spiderfq":60,
-        "noticefq":3,
+        "changednoticefq":1,
+        "allnoticefq":3,
         "dollar_rate":6.5
     }
 }

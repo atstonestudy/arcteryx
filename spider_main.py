@@ -2,16 +2,25 @@ from timeloop import Timeloop
 from datetime import timedelta
 from scrapy.cmdline import execute
 from tool import loghandler
+from tool.conf import baseconf
+from dbutil.mongoagent import mongo_agent
+from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+import datetime
+import subprocess
 
-tl = Timeloop()
 
-# 爬取rei平台数据
-@tl.job(interval=timedelta(minutes=30))
-def sample_job_every_180s():
-    # print("sample_job_every_30m----")
-    loghandler.logger.warning("crawl rei data--------")
+def job_function():
+    print(datetime.datetime.now())
+    # execute(['scrapy', 'crawl', 'rei_arcteryx'])
+    subprocess.Popen('scrapy crawl rei_arcteryx',shell=True)
 
-    execute(['scrapy', 'crawl', 'rei_arcteryx'])
-   
+def main():
 
-tl.start(block=True)
+    mongo_agent.initdb(baseconf["db"]["dbhost"],baseconf["db"]["dbport"],baseconf["db"]["dbname"],baseconf["db"]["dbusername"],baseconf["db"]["dbpawsswd"])
+    scheduler = BlockingScheduler()
+    scheduler.add_job(job_function, trigger=IntervalTrigger(minutes=baseconf["appconf"]["spiderfq"], timezone="Asia/Shanghai"))
+    scheduler.start()
+
+
+main()

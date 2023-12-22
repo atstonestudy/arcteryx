@@ -8,9 +8,10 @@
 from itemadapter import ItemAdapter
 
 import pymongo
+from dbutil.mongoagent import mongo_agent
+from tool.conf import baseconf
 
-
-
+mongo_agent.initdb(baseconf["db"]["dbhost"],baseconf["db"]["dbport"],baseconf["db"]["dbname"],baseconf["db"]["dbusername"],baseconf["db"]["dbpawsswd"])
 
 class MyspiderPipeline:
     def process_item(self, item, spider):
@@ -33,10 +34,6 @@ class MyspiderPipeline:
             x = collection.insert_one(dbitem)
             print(x.inserted_id)
         elif spider.name == 'rei_arcteryx':
-            # client = pymongo.MongoClient(host="121.37.187.103", port=27017,username="arcteryx-hecter",password="123456")
-            client = pymongo.MongoClient('mongodb://arcteryx-hecter:123456@121.37.187.103:27017/arcteryx')
-            db = client["arcteryx"]
-            collection = db['arcteryx']
             id = item['title'] + "-" + item['color_name'] + "-" + item['size']
             # dbitem = {
             #     "title": item['title'],
@@ -51,7 +48,8 @@ class MyspiderPipeline:
             # x = collection.insert_one(dbitem)
 
            
-            ret = collection.find_one({'_id': id})
+            # ret = collection.find_one({'_id': id})
+            ret = mongo_agent.find_one({'_id': id})
             print("start item db op----------------------------------")
             print(id)
             if ret and item['price']==ret["price"] and item['raw_price']==ret["raw_price"] and item['savingsPercentage']==ret["savingsPercentage"] and item['status']==ret["status"]:
@@ -72,10 +70,15 @@ class MyspiderPipeline:
                     "link":item['link']
                 }
           
-                collection.update_one(
-                    {'_id': id},
-                    {'$set': dbitem},
-                    upsert=True
+                # collection.update_one(
+                #     {'_id': id},
+                #     {'$set': dbitem},
+                #     upsert=True
+                # )
+                mongo_agent.update_one(
+                     {'_id': id},
+                     {'$set': dbitem},
+                     upsert=True
                 )
           
 
