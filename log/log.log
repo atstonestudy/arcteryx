@@ -1,0 +1,5 @@
+nohup: ignoring input
+[2023-12-21 14:10:27,945] [timeloop] [INFO] Starting Timeloop..
+[2023-12-21 14:10:27,945] [timeloop] [INFO] Registered job <function sample_job_every_2s at 0x7f0ed001c158>
+[2023-12-21 14:10:27,945] [timeloop] [INFO] Registered job <function sample_job_every_180s at 0x7f0ed001c1e0>
+[2023-12-21 14:10:27,946] [timeloop] [INFO] Timeloop now started. Jobs will run based on the interval set

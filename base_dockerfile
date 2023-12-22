@@ -1,0 +1,11 @@
+FROM python:3.6
+
+MAINTAINER hecter
+
+ADD . /arcteryx_work
+WORKDIR /arcteryx_work
+RUN pip install --upgrade pip
+RUN pip3 install -r requirements.txt
+
+# ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT  ["nohup","python3", "main.py",">log/log.log","2>&1  &", "&"]

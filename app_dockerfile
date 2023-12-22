@@ -1,0 +1,16 @@
+FROM arcteryx:1.0
+
+MAINTAINER hecter
+
+RUN rm -rf /arcteryx_work
+ADD . /arcteryx_work
+WORKDIR /arcteryx_work
+RUN chmod 777 ./start.sh
+
+
+# ENTRYPOINT  ["nohup","python3", "main.py",">log/log.log","2>&1", "&"]
+ENV ARCTERYX_HOME /arcteryx_work
+ENV PATH $PATH:$ARCTERYX_HOME
+
+
+ENTRYPOINT  ["/arcteryx_work/start.sh"]
