@@ -1,7 +1,10 @@
- docker build -f app_dockerfile -t arcteryx:5.0 .
+docker build -f app_dockerfile -t arcteryx:5.0 .
  
  
- docker run -d --name arcteryxapp arcteryx:5.0
+docker run -d --name arcteryxapp arcteryx:5.0
+
+docker run -d -v /D/Docker/arcteryx/conf:/arcteryx_work/conf --name arcteryxapp arcteryx:5.0
+
  docker exec -it arcteryxapp /bin/bash
 
  docker run -it arcteryx:4.3 /bin/bash
