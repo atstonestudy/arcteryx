@@ -1,4 +1,4 @@
-docker build -f app_dockerfile -t arcteryx:5.2 .
+docker build -f app_dockerfile -t arcteryx:5.4 .
  
  
 docker run -d --name arcteryxapp arcteryx:5.0

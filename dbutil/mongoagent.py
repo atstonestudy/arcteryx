@@ -19,6 +19,9 @@ class MongoAgent:
     def find(self,query):
         return self.client[self.dbname][self.collection].find(query)
 
+    def count(self,query):
+        return self.client[self.dbname][self.collection].count_documents(query)
+
     def find_one(self,query):
         return self.client[self.dbname][self.collection].find_one(query)
 

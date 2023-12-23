@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-data = pd.read_csv('./conf/highquality_goods.csv', usecols=["REI命名", "size","color_name"])
+data = pd.read_csv('./conf/highquality_goods.csv', usecols=["title_keywords", "size","color_name"])
 # print(data)
 data=data.fillna(6666)
 

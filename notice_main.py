@@ -24,7 +24,12 @@ def notice_items(goods,ischange=False):
                 "content": texts
             }
         }
-        r = requests.post('https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=f8bb7488-9f79-47e7-a808-4a4c42f53ef4', json=data, headers=headers)
+        boturl = ''
+        if ischange:
+            boturl = baseconf["bot"]["qianduoduo"]
+        else:
+            boturl = baseconf["bot"]["qianchaoduo"]
+        r = requests.post(boturl, json=data, headers=headers)
         return r
 
     texts = ''
@@ -43,9 +48,9 @@ def notice_items(goods,ischange=False):
         # notice_item = item['title'] + " " + item["gender"] + " " + item['color_name'] + " " + item['size'] + " " + str(item['price']) + "["+str(100-item['savingsPercentage']) +"]" + " " + item['status']
         head = ''
         if ischange:
-            head = "有更新商品:\n"
+            head = "# <font color='warning'>有更新商品:</font>\n"
         else:
-            head = "全量商品:\n"
+            head = "# <font color='warning'>全量商品:</font>\n"
         title = "<font color='warning'>型号：</font>" + item['title']
         gender = "<font color='warning'>性别：</font>" + item['gender']
         color_name = "<font color='warning'>颜色：</font>" + item['color_name']
@@ -57,7 +62,7 @@ def notice_items(goods,ischange=False):
             sale = 0
         savingsPercentage = "<font color='warning'>折扣率：</font>" + str(sale)
         status = "<font color='warning'>状态：</font>" + item['status']
-        link = "<font color='warning'>链接：</font>" + item['link']
+        link = "<font color='warning'>链接：</font>" + "["+ item['link'] + "](" + item['link'] + ")"
         notice_item = head + "\n" + title + '\n' + gender + '\n' + color_name + '\n' + size + '\n' + price + '\n' + savingsPercentage + '\n' + status + '\n' + link
         texts += notice_item + '\n----\n'
         n = n+1
@@ -101,15 +106,18 @@ def notice_highquality_goods():
 
     # 获取所有高优商品
     query = queryhandler.get_hq_query()
+    loghandler.logger.warning(query)
     ret = mongo_agent.find(query)
+    # loghandler.logger.warning(ret)
+
     # 通知高优商品
     notice_items(ret)
 
-    # 已通知的物件全部已通知
-    mongo_agent.update_many(
-        query,
-        { "$set": { "ischange": 0 } },
-    )
+    # # 已通知的物件全部已通知
+    # mongo_agent.update_many(
+    #     query,
+    #     { "$set": { "ischange": 0 } },
+    # )
 
 
 # tl.start(block=True)
