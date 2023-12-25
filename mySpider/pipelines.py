@@ -52,6 +52,15 @@ class MyspiderPipeline:
             ret = mongo_agent.find_one({'_id': id})
             print("start item db op----------------------------------")
             print(id)
+
+            gender = ''
+            if "Women" in item['name']:
+                gender = "women"
+            elif "Men" in item['name']:
+                gender = "man"
+            else:
+                gender = "other"
+
             if ret and item['price']==ret["price"] and item['raw_price']==ret["raw_price"] and item['savingsPercentage']==ret["savingsPercentage"] and item['status']==ret["status"]:
                 print("=================no changed============")
                 return
@@ -67,7 +76,8 @@ class MyspiderPipeline:
                     "savingsPercentage":item['savingsPercentage'],
                     "status":item['status'],
                     "ischange":1,
-                    "link":item['link']
+                    "link":item['link'],
+                    "gender": gender
                 }
           
                 # collection.update_one(

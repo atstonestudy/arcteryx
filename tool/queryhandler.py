@@ -7,10 +7,13 @@ def get_hq_query(ischange=False):
         if row["title_keywords"]  == 6666 :
             continue
         sizelist,colorlist,titlekeywordslist = [],[],[]
+        gender = ''
         if row["size"] != 6666:
             sizelist = sizelist + row["size"].split("/")
         if row["color_name"] != 6666:
             colorlist = colorlist + row["color_name"].split("/")
+        if row["gender"] != 6666:
+            gender =  row["gender"]
         titlekeywordslist = row["title_keywords"].split("/")
         if sizelist and colorlist:
             if ischange:
@@ -40,6 +43,9 @@ def get_hq_query(ischange=False):
             "$and":titlelist
         }
         query.update(titlequery)
+
+        if gender:
+            query.update({"gender":gender})
         querys.append(query)
     query = {"$or":querys}
     return query
