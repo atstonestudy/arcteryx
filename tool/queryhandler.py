@@ -44,8 +44,14 @@ def get_hq_query(ischange=False):
         }
         query.update(titlequery)
 
+        # 需要做性别过滤
         if gender:
             query.update({"gender":gender})
+
+        # 需要做商品状态过滤
+        if not ischange:
+            query.update({"status":"AVAILABLE"})
+
         querys.append(query)
     query = {"$or":querys}
     return query
