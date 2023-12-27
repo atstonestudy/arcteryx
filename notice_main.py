@@ -48,9 +48,9 @@ def notice_items(goods,ischange=False):
         # notice_item = item['title'] + " " + item["gender"] + " " + item['color_name'] + " " + item['size'] + " " + str(item['price']) + "["+str(100-item['savingsPercentage']) +"]" + " " + item['status']
         head = ''
         if ischange:
-            head = "# <font color='warning'>有更新商品:</font>\n"
+            head = "# <font color='warning'>有更新商品:%s</font>\n" % (count+1)
         else:
-            head = "# <font color='warning'>全量商品:</font>\n"
+            head = "# <font color='warning'>全量商品:%s</font>\n" % (count+1)
         title = "<font color='warning'>型号：</font>" + item['title']
         gender = "<font color='warning'>性别：</font>" + item['gender']
         color_name = "<font color='warning'>颜色：</font>" + item['color_name']
