@@ -1,5 +1,6 @@
 from tool import conf
 from tool import loghandler
+import re
 
 def get_hq_query(ischange=False):
     querys = []
@@ -15,23 +16,30 @@ def get_hq_query(ischange=False):
         if row["gender"] != 6666:
             gender =  row["gender"]
         titlekeywordslist = row["title_keywords"].split("/")
-        if sizelist and colorlist:
-            if ischange:
-                query = {"ischange": 1,  "size":{"$in": sizelist},"color_name":{"$in": colorlist}}
-            else:
-                query = { "size":{"$in": sizelist},"color_name":{"$in": colorlist}}
-                # query = {"title": {"$regex":row["REI命名"]},"$option":"i","size":{"$in": sizelist},"color_name":{"$in": colorlist}}
 
-        elif sizelist and (not colorlist):
+
+        # color忽略大小写
+        re_colorlist = []
+        for  cl in colorlist:
+            value = '^%s$' % cl #匹配data开头结尾
+            re_value = re.compile(value, re.IGNORECASE) #IGNORECASE 正则匹配忽略大小写
+            re_colorlist.append(re_value)
+
+        if sizelist and re_colorlist:
+            if ischange:
+                query = {"ischange": 1,  "size":{"$in": sizelist},"color_name":{"$in": re_colorlist}}
+            else:
+                query = { "size":{"$in": sizelist},"color_name":{"$in": re_colorlist}}
+        elif sizelist and (not re_colorlist):
             if ischange:
                 query = {"ischange": 1,  "size":{"$in": sizelist}}
             else:
                 query = { "size":{"$in": sizelist}}
-        elif (not sizelist) and colorlist:
+        elif (not sizelist) and re_colorlist:
             if ischange:
-                query = {"ischange": 1,  "color_name":{"$in": colorlist}}
+                query = {"ischange": 1,  "color_name":{"$in": re_colorlist}}
             else:
-                query = { "color_name":{"$in": colorlist}}
+                query = { "color_name":{"$in": re_colorlist}}
         else:
             if ischange:
                 query = {"ischange": 1}
@@ -48,7 +56,7 @@ def get_hq_query(ischange=False):
         if gender:
             query.update({"gender":gender})
 
-        # 需要做商品状态过滤
+        # 需要做商品状态过滤,全量只通知上架商品
         if not ischange:
             query.update({"status":"AVAILABLE"})
 

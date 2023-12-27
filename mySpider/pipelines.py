@@ -55,7 +55,7 @@ class MyspiderPipeline:
 
             gender = ''
             if "Women" in item['title']:
-                gender = "women"
+                gender = "woman"
             elif "Men" in item['title']:
                 gender = "man"
             else:
