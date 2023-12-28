@@ -8,6 +8,7 @@ import time
 from tool import queryhandler
 from tool import loghandler
 from tool.conf import baseconf
+from tool import conf
 
 
 
@@ -44,7 +45,20 @@ def notice_items(goods,ischange=False):
         else:
             item["gender"] = "other"
 
-        item["price"] = item["price"] * dollar_rate
+        item["price"] = round(item["price"] * dollar_rate,2)
+        dewu_price_conf = conf.get_item_conf(item["title"])
+        profit = 0
+        profit_per = -1
+        # print(dewu_price_conf)
+        # print(item["price"])
+        # print(baseconf["appconf"])
+        if dewu_price_conf.empty:
+            profit = -1
+        else:
+            profit = round(float(dewu_price_conf["dewu_price"]) - (float(dewu_price_conf["dewu_price"]) * baseconf["appconf"]["commission"] + baseconf["appconf"]["other_cost"])-baseconf["appconf"]["freight"] -item["price"],2)
+            profit_per = round(profit/item["price"],2)
+            print(profit)
+            print(profit_per)
         # notice_item = item['title'] + " " + item["gender"] + " " + item['color_name'] + " " + item['size'] + " " + str(item['price']) + "["+str(100-item['savingsPercentage']) +"]" + " " + item['status']
         head = ''
         if ischange:
@@ -56,6 +70,8 @@ def notice_items(goods,ischange=False):
         color_name = "<font color='warning'>颜色：</font>" + item['color_name']
         size = "<font color='warning'>尺码：</font>" + item['size']
         price = "<font color='warning'>价格：</font>" + str(item['price'])
+        profit_str = "<font color='warning'>利润：</font>" + str(profit)
+        profitper_str = "<font color='warning'>利润率：</font>" + str(profit_per)
         if item['savingsPercentage']:
             sale = 100 - item['savingsPercentage']
         else:
@@ -63,7 +79,7 @@ def notice_items(goods,ischange=False):
         savingsPercentage = "<font color='warning'>折扣率：</font>" + str(sale)
         status = "<font color='warning'>状态：</font>" + item['status']
         link = "<font color='warning'>链接：</font>" + "["+ item['link'] + "](" + item['link'] + ")"
-        notice_item = head + "\n" + title + '\n' + gender + '\n' + color_name + '\n' + size + '\n' + price + '\n' + savingsPercentage + '\n' + status + '\n' + link
+        notice_item = head + "\n" + title + '\n' + gender + '\n' + color_name + '\n' + size + '\n' + price + '\n' + profit_str + '\n' + profitper_str + '\n' + savingsPercentage + '\n' + status + '\n' + link
         texts += notice_item + '\n----\n'
         n = n+1
         if n >= 5:
